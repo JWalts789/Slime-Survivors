@@ -428,7 +428,7 @@ const ENEMIES = {
   charge: {color:'#ff5d5d', r:16, hp:26,   spd:70,  bite:11, xp:6,  mass:5,   behavior:'charge'},
   spit:   {color:'#e06bff', r:15, hp:22,   spd:46,  bite:7,  xp:6,  mass:5,   behavior:'spit'},
   shield: {color:'#6bd6ff', r:18, hp:38,   spd:40,  bite:8,  xp:8,  mass:7,   behavior:'shield', shield:42},
-  elite:  {color:'#ff45e0', r:30, hp:150,  spd:38,  bite:13, xp:18, mass:14,  behavior:'chase', elite:true},
+  elite:  {color:'#ff45e0', r:26, hp:120,  spd:38,  bite:13, xp:18, mass:14,  behavior:'chase', elite:true},
   boss:   {color:'#c14fff', r:48, hp:1000, spd:40,  bite:18, xp:90, mass:60,  behavior:'boss'},
 };
 
@@ -673,18 +673,23 @@ function doSplit(){
 //  SPAWNING
 // ============================================================
 function spawnEnemy(type){
+  const mins=elapsed/60;
+  const D=curDiff();
+  const sz=Math.max(0, gOf(player.mass)-1);        // how far past starting size we are
+  // keep elites a capped minority so a wall of giants can't lock you in
+  if(type==='elite'){
+    let ec=0; for(const e of enemies) if(e.elite) ec++;
+    if(ec >= Math.min(8, 3+Math.floor(sz*0.4))) type = (Math.random()<0.5?'ball':'gummy');
+  }
   const def=ENEMIES[type];
   const a=rand(0,TAU);
   // spawn just beyond the visible edge, accounting for zoom
   const d=(Math.hypot(W,H)/2)/zoom + rand(40,110);
-  const mins=elapsed/60;
-  const D=curDiff();
-  const sz=Math.max(0, gOf(player.mass)-1);        // how far past starting size we are
   const hpScale=(1 + mins*0.7 + sz*0.6) * D.hp;    // tougher over time AND as you grow
   const biteScale=(1 + mins*0.25 + sz*0.30) * D.bite; // hits hurt more as you grow (anti-invincibility)
   let rr=def.r;
-  if(type==='ball')       rr*=(1+sz*0.15);          // heavies grow with you so they stay un-squishable
-  else if(type==='elite') rr*=(1+sz*0.45);
+  if(type==='ball')       rr*=Math.min(1.6, 1+sz*0.13);   // heavies grow with you but stay reasonable
+  else if(type==='elite') rr*=Math.min(1.85, 1+sz*0.18);  // un-squishable, but never a giant wall
   const shp=(def.shield||0)*(1+mins*0.3+sz*0.3)*D.hp;
   const e={
     type, behavior:def.behavior||'chase',
@@ -703,11 +708,11 @@ function pickEnemyType(mins){
   const pool=[['gummy',5]];
   if(mins>0.5) pool.push(['jelly',3]);
   if(mins>1.2) pool.push(['split',2]);
-  if(mins>1.4) pool.push(['ball', 2+Math.floor(sz*0.5)]);     // more heavies as you grow
+  if(mins>1.4) pool.push(['ball', 2+Math.min(3,Math.floor(sz*0.4))]);   // more heavies as you grow (capped)
   if(mins>2.0) pool.push(['charge',2]);
   if(mins>2.4) pool.push(['spit',2]);
   if(mins>2.8) pool.push(['shield',2]);
-  if(mins>2.0 || sz>1.3) pool.push(['elite', 1+Math.floor(sz*0.6)]); // elites ramp with size
+  if(mins>2.0 || sz>1.3) pool.push(['elite', Math.min(3, 1+Math.floor(sz*0.35))]); // elites ramp with size (capped)
   let tot=0; for(const p of pool) tot+=p[1];
   let r=rand(0,tot);
   for(const p of pool){ r-=p[1]; if(r<=0) return p[0]; }
@@ -717,11 +722,11 @@ function updateSpawns(dt){
   const mins=elapsed/60;
   const D=curDiff();
   const sz=Math.max(0, gOf(player.mass)-1);
-  const interval = Math.max(0.08, (0.9 - mins*0.14 - sz*0.05) / D.rate); // faster over time, size, and difficulty
+  const interval = Math.max(0.1, (0.9 - mins*0.14 - sz*0.05) / D.rate); // faster over time, size, and difficulty
   spawnAcc+=dt;
   while(spawnAcc>=interval){
     spawnAcc-=interval;
-    const batch = 1+Math.floor((mins*0.7 + sz*0.5) * D.rate);
+    const batch = 1+Math.min(7, Math.floor((mins*0.7 + sz*0.5) * D.rate));
     for(let i=0;i<batch;i++) spawnEnemy(pickEnemyType(mins));
   }
   // boss — comes more often the bigger you get and the harder the difficulty
@@ -968,6 +973,39 @@ function updateBoss(e,ux,uy,d,dt){
   }
 }
 
+// gentle separation so the horde spreads out instead of stacking into one point
+const _sepGrid=new Map();
+function separateEnemies(){
+  const cell=46; _sepGrid.clear();
+  for(const e of enemies){
+    if(e.boss) continue;
+    const key=Math.floor(e.x/cell)+','+Math.floor(e.y/cell);
+    let arr=_sepGrid.get(key); if(!arr){arr=[]; _sepGrid.set(key,arr);} arr.push(e);
+  }
+  for(const e of enemies){
+    if(e.boss) continue;
+    const cx=Math.floor(e.x/cell), cy=Math.floor(e.y/cell);
+    let pushes=0;
+    for(let gx=cx-1;gx<=cx+1;gx++){
+      for(let gy=cy-1;gy<=cy+1;gy++){
+        const arr=_sepGrid.get(gx+','+gy); if(!arr) continue;
+        for(const o of arr){
+          if(o===e) continue;
+          const dx=e.x-o.x, dy=e.y-o.y, d2=dx*dx+dy*dy;
+          const rr=(e.r+o.r)*0.7;
+          if(d2>0.01 && d2<rr*rr){
+            const d=Math.sqrt(d2), push=(rr-d)/d*0.4;
+            e.x+=dx*push; e.y+=dy*push;
+            if(++pushes>=10) break;
+          }
+        }
+        if(pushes>=10) break;
+      }
+      if(pushes>=10) break;
+    }
+  }
+}
+
 // ============================================================
 //  UPDATE
 // ============================================================
@@ -1033,6 +1071,7 @@ function update(dt){
       if(state!=='play') return;
     }
   }
+  separateEnemies();
 
   // followers
   for(let i=followers.length-1;i>=0;i--){
@@ -1073,12 +1112,13 @@ function update(dt){
         if(s._hitset.has(e)) continue;
         hitEnemy(e,s.dmg,true); s._hitset.add(e);
         if(s.kind==='gob'){
-          // ricochet to the next nearby slime
+          // ricochet to the next nearby slime, then travel a frame before hitting again
           if(s.bounce>0){
             s.bounce--;
             let best=null,bd=260*260;
             for(const e2 of enemies){ if(s._hitset.has(e2))continue; const dd=dist2(s.x,s.y,e2.x,e2.y); if(dd<bd){bd=dd;best=e2;} }
-            if(best){ const a=Math.atan2(best.y-s.y,best.x-s.x); s.vx=Math.cos(a)*s.speed; s.vy=Math.sin(a)*s.speed; }
+            if(best){ const a=Math.atan2(best.y-s.y,best.x-s.x); s.vx=Math.cos(a)*s.speed; s.vy=Math.sin(a)*s.speed; break; }
+            else { shots.splice(i,1); removed=true; break; }
           } else { shots.splice(i,1); removed=true; break; }
         } else if(s.pierce>0){ s.pierce--; }
         else { shots.splice(i,1); removed=true; break; }
@@ -1143,10 +1183,12 @@ function update(dt){
     }
   }
   if(eshots.length>300) eshots.splice(0, eshots.length-300);
+  if(shots.length>500) shots.splice(0, shots.length-500);
+  if(mines.length>120) mines.splice(0, mines.length-120);
 
   // weapon slot unlocks from growth
   let slots=1; for(const t of SLOT_THRESHOLDS){ if(player.mass>=t) slots++; }
-  if(slots>maxSlots) maxSlots=slots;
+  if(slots>maxSlots){ maxSlots=slots; popText(player.x, player.y-radiusFromMass(player.mass)-24, 'WEAPON SLOT!', '#ffe27a'); burst(player.x,player.y,'#ffe27a',14); }
 
   // fx
   for(let i=fx.length-1;i>=0;i--){const f=fx[i]; f.t+=dt; if(f.t>=f.dur) fx.splice(i,1);}
@@ -1212,9 +1254,7 @@ function render(){
     if(!inView(o.x,o.y,40)) continue;
     const wob=1+Math.sin(o.wob)*0.12;
     ctx.fillStyle='#5ad9ff';
-    ctx.shadowColor='#5ad9ff'; ctx.shadowBlur=10;
     blob(o.x,o.y,o.r*wob,o.wob);
-    ctx.shadowBlur=0;
     ctx.fillStyle='rgba(255,255,255,.7)';
     ctx.beginPath();ctx.arc(o.x-o.r*0.3,o.y-o.r*0.3,o.r*0.28,0,TAU);ctx.fill();
   }
@@ -1258,7 +1298,7 @@ function render(){
     const winding=(e.behavior==='charge'&&e.cState==='wind');
     const wob=1+Math.sin(e.wob)*0.14 + (winding?0.12*Math.sin(e.cT*40):0);
     ctx.fillStyle = (e.hit>0||winding)?'#ffffff':e.color;
-    ctx.shadowColor=e.color; ctx.shadowBlur= e.boss?24:(lunging?16:6);
+    ctx.shadowColor=e.color; ctx.shadowBlur= e.boss?24:(e.elite?14:(lunging?16:0));
     blob(e.x,e.y,e.r*wob,e.wob);
     ctx.shadowBlur=0;
     // shield shell
@@ -1282,12 +1322,18 @@ function render(){
       ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(e.x-40,e.y-e.r-22,80,7);
       ctx.fillStyle='#ff6b9d';ctx.fillRect(e.x-40,e.y-e.r-22,80*clamp(e.hp/e.maxhp,0,1),7);
     }
+    else if(e.elite){ // slim elite HP bar
+      const w=e.r*1.6;
+      ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(e.x-w/2,e.y-e.r-11,w,4);
+      ctx.fillStyle='#ff45e0';ctx.fillRect(e.x-w/2,e.y-e.r-11,w*clamp(e.hp/e.maxhp,0,1),4);
+    }
   }
 
   // enemy projectiles
   for(const p of eshots){
-    ctx.fillStyle=p.color; ctx.shadowColor=p.color; ctx.shadowBlur=8;
-    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TAU);ctx.fill(); ctx.shadowBlur=0;
+    if(!inView(p.x,p.y,30)) continue;
+    ctx.fillStyle=p.color;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TAU);ctx.fill();
     ctx.fillStyle='rgba(255,255,255,.5)';ctx.beginPath();ctx.arc(p.x-p.r*0.3,p.y-p.r*0.3,p.r*0.3,0,TAU);ctx.fill();
   }
 
@@ -1300,8 +1346,9 @@ function render(){
 
   // shots
   for(const s of shots){
-    ctx.fillStyle=s.color; ctx.shadowColor=s.color;ctx.shadowBlur=8;
-    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,TAU);ctx.fill();ctx.shadowBlur=0;
+    if(!inView(s.x,s.y,30)) continue;
+    ctx.fillStyle=s.color;
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,TAU);ctx.fill();
   }
 
   // followers
