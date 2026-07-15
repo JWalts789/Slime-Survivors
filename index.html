@@ -722,18 +722,26 @@ function updateSpawns(dt){
   const mins=elapsed/60;
   const D=curDiff();
   const sz=Math.max(0, gOf(player.mass)-1);
-  const interval = Math.max(0.1, (0.9 - mins*0.14 - sz*0.05) / D.rate); // faster over time, size, and difficulty
+  const interval = Math.max(0.14, (0.95 - mins*0.13 - sz*0.04) / D.rate);
   spawnAcc+=dt;
   while(spawnAcc>=interval){
     spawnAcc-=interval;
-    const batch = 1+Math.min(7, Math.floor((mins*0.7 + sz*0.5) * D.rate));
+    const batch = 1+Math.min(6, Math.floor((mins*0.6 + sz*0.3) * D.rate));
     for(let i=0;i<batch;i++) spawnEnemy(pickEnemyType(mins));
   }
   // boss — comes more often the bigger you get and the harder the difficulty
   bossTimer-=dt;
   if(bossTimer<=0){ bossTimer=Math.max(28, (75 - sz*6)/D.boss); spawnEnemy('boss'); popText(player.x,player.y-70,'A BIG BERRY APPROACHES!','#ff9de0'); shake(8); }
-  // cap
-  if(enemies.length>260) enemies.splice(0, enemies.length-260);
+  // cap — cull the FARTHEST excess (never the ones near you) so nothing vanishes mid-approach
+  const CAP=220;
+  if(enemies.length>CAP){
+    let over=enemies.length-CAP;
+    enemies.sort((a,b)=>dist2(b.x,b.y,player.x,player.y)-dist2(a.x,a.y,player.x,player.y));
+    for(let i=0;i<enemies.length && over>0;){
+      if(enemies[i].boss){ i++; continue; }
+      enemies.splice(i,1); over--;
+    }
+  }
 }
 
 // ============================================================
@@ -1059,7 +1067,7 @@ function update(dt){
     if(e.behavior==='charge') updateCharger(e,ux,uy,d,dt);
     else if(e.behavior==='spit') updateSpitter(e,ux,uy,d,dt);
     else if(e.behavior==='boss') updateBoss(e,ux,uy,d,dt);
-    else { e.x+=ux*e.spd*dt; e.y+=uy*e.spd*dt; }    // chase / shield / split
+    else { const cs=d>520?1.7:1; e.x+=ux*e.spd*cs*dt; e.y+=uy*e.spd*cs*dt; }    // chase (distant ones hustle in)
     // apply & decay knockback
     if(e.kx||e.ky){ e.x+=e.kx*dt; e.y+=e.ky*dt; e.kx*=0.86; e.ky*=0.86;
       if(Math.abs(e.kx)<2&&Math.abs(e.ky)<2){e.kx=0;e.ky=0;} }
