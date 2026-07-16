@@ -71,12 +71,78 @@
     z-index:6;font-weight:800;font-size:12px;letter-spacing:1.5px;color:#241634;
     padding:3px 12px;border-radius:999px;background:#ffe27a;box-shadow:0 2px 8px rgba(0,0,0,.35);pointer-events:none;}
 
+  /* ---- candy machine (slot) ---- */
+  #slot{z-index:14;}
+  .machine{position:relative;width:min(94vw,420px);padding:16px 16px 18px;border-radius:26px;
+    background:linear-gradient(180deg,#4a2d70,#2b1a45);
+    border:3px solid rgba(255,255,255,.22);
+    box-shadow:0 18px 44px rgba(0,0,0,.6), inset 0 2px 0 rgba(255,255,255,.28);
+    text-align:center;}
+  .machine.jackpot{animation:jackpotFlash .5s ease-out 3;}
+  @keyframes jackpotFlash{
+    0%{box-shadow:0 18px 44px rgba(0,0,0,.6), inset 0 2px 0 rgba(255,255,255,.28), 0 0 0 0 rgba(255,226,122,.9);}
+    50%{box-shadow:0 18px 44px rgba(0,0,0,.6), inset 0 2px 0 rgba(255,255,255,.28), 0 0 60px 14px rgba(255,226,122,.75);}
+    100%{box-shadow:0 18px 44px rgba(0,0,0,.6), inset 0 2px 0 rgba(255,255,255,.28), 0 0 0 0 rgba(255,226,122,0);}
+  }
+  .mtop{display:flex;align-items:center;justify-content:center;gap:10px;
+    font-weight:800;font-size:13px;letter-spacing:2px;color:#ffe27a;margin-bottom:10px;}
+  .mled{width:9px;height:9px;border-radius:50%;background:#ff6b9d;box-shadow:0 0 10px #ff6b9d;
+    animation:led 1s steps(2,end) infinite;}
+  @keyframes led{0%,100%{opacity:1}50%{opacity:.25}}
+  .reels{position:relative;display:flex;gap:8px;justify-content:center;padding:10px;
+    background:#160d26;border-radius:16px;border:2px solid rgba(255,255,255,.14);
+    box-shadow:inset 0 6px 18px rgba(0,0,0,.75);}
+  .reel{position:relative;width:76px;height:76px;overflow:hidden;border-radius:11px;
+    background:linear-gradient(180deg,#241634,#160d26);}
+  .reel.spinning .strip{filter:blur(2.5px);}
+  .strip{will-change:transform;}
+  .sym{width:76px;height:76px;display:flex;align-items:center;justify-content:center;}
+  .sym::after{content:'';width:46px;height:46px;border-radius:50%;
+    background:radial-gradient(circle at 34% 30%, #fff9, var(--c) 58%, rgba(0,0,0,.34));
+    box-shadow:0 2px 8px rgba(0,0,0,.5), inset 0 -3px 6px rgba(0,0,0,.28);}
+  .reelmask{position:absolute;inset:10px;border-radius:16px;pointer-events:none;
+    background:linear-gradient(180deg,rgba(10,4,20,.85),transparent 32%,transparent 68%,rgba(10,4,20,.85));}
+  .coinslot{margin:10px auto 4px;width:56px;height:12px;border-radius:6px;
+    background:#160d26;border:2px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;}
+  .slit{width:30px;height:3px;border-radius:2px;background:#ffe27a;box-shadow:0 0 8px #ffe27a;}
+  .slotmsg{min-height:24px;font-weight:800;font-size:15px;letter-spacing:1px;color:#e7daf5;margin:8px 0 4px;}
+  .slotmsg.tense{color:#ffe27a;animation:tense .35s ease-in-out infinite;}
+  @keyframes tense{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+  .slotmsg.good{color:#7ef0c8;}
+  .slotmsg.jack{color:#ffe27a;font-size:23px;letter-spacing:2px;
+    text-shadow:0 0 18px rgba(255,226,122,.9);animation:jackPop .45s cubic-bezier(.2,1.7,.4,1);}
+  @keyframes jackPop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+  .payout{display:flex;flex-direction:column;gap:7px;margin:6px 0 12px;}
+  .loot{position:relative;display:flex;align-items:center;gap:11px;padding:7px 12px;border-radius:12px;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);overflow:hidden;
+    animation:lootIn .4s cubic-bezier(.2,1.6,.4,1) both;}
+  @keyframes lootIn{0%{transform:translateY(16px) scale(.86);opacity:0}100%{transform:none;opacity:1}}
+  /* the VS-style light beam behind each item */
+  .loot .beam{position:absolute;left:24px;top:-60%;width:42px;height:220%;pointer-events:none;
+    background:linear-gradient(180deg,transparent,var(--c),transparent);
+    opacity:.5;filter:blur(7px);transform:translateX(-50%);
+    animation:beamUp .85s ease-out both;}
+  @keyframes beamUp{0%{opacity:0;transform:translateX(-50%) scaleY(.2)}
+    45%{opacity:.85}100%{opacity:.42;transform:translateX(-50%) scaleY(1)}}
+  .loot .cicon{position:relative;width:30px;height:30px;flex:none;}
+  .loot .lname{position:relative;font-weight:700;font-size:13.5px;color:#f3e9ff;text-align:left;}
+  .loot .lname b{color:#ffe27a;}
+  .loot.evoloot{border-color:rgba(255,226,122,.6);background:rgba(255,226,122,.12);}
+  .loot.bonus{border-color:rgba(126,240,200,.4);}
+  .candydisc.big{width:26px;height:26px;}
+  @media (prefers-reduced-motion: reduce){
+    .machine.jackpot,.slotmsg.tense,.slotmsg.jack,.loot,.loot .beam,.mled{animation:none;}
+  }
+
   /* slime mascot */
   #mascot{width:clamp(96px,27vw,148px);height:auto;margin-bottom:-4px;animation:bob 2.2s ease-in-out infinite;
     filter:drop-shadow(0 10px 14px rgba(0,0,0,.4));}
 
   /* ---------- HUD ---------- */
   #hud{position:fixed;top:0;left:0;right:0;z-index:10;pointer-events:none;padding:env(safe-area-inset-top) 12px 0;}
+  /* scrim: HUD text has to survive a screen full of glowing slimes */
+  #hud::before{content:'';position:absolute;left:0;right:0;top:0;height:190px;pointer-events:none;z-index:-1;
+    background:linear-gradient(180deg,rgba(14,5,26,.62),rgba(14,5,26,.28) 55%,rgba(14,5,26,0));}
   #topbar{display:flex;align-items:center;gap:10px;margin-top:8px;}
   #xpwrap{position:relative;flex:1;height:18px;background:rgba(0,0,0,.42);border-radius:999px;overflow:hidden;
     border:2px solid rgba(255,255,255,.18);box-shadow:inset 0 2px 4px rgba(0,0,0,.4);}
@@ -108,6 +174,7 @@
 
   #timer{position:fixed;top:calc(env(safe-area-inset-top) + 42px);left:50%;transform:translateX(-50%);
     font-size:clamp(28px,7.5vw,38px);font-weight:800;color:#fff;z-index:9;pointer-events:none;
+    font-variant-numeric:tabular-nums;letter-spacing:.5px;
     text-shadow:0 2px 0 rgba(0,0,0,.35),0 0 14px rgba(0,0,0,.45);}
   #statline{position:fixed;top:calc(env(safe-area-inset-top) + 84px);left:50%;transform:translateX(-50%);
     z-index:9;display:flex;gap:8px;pointer-events:none;font-size:12px;font-weight:800;}
@@ -256,6 +323,7 @@
 <div id="statline" class="hidden">
   <span class="s" id="sizestat">size 1.0x</span>
   <span class="s" id="spdstat">spd 1.0x</span>
+  <span class="s" id="fpsstat">-- fps</span>
 </div>
 <div id="hpwrap" class="hidden"><div id="hpbar"></div></div>
 <div id="hplabel" class="hidden">SIZE</div>
@@ -318,8 +386,24 @@
 </div>
 
 <!-- Game over -->
-<div id="gameover" class="overlay hidden">
-  <h1 style="font-size:clamp(34px,9vw,60px)">SQUISHED</h1>
+<!-- Candy Machine -->
+<div id="slot" class="overlay hidden">
+  <div class="machine">
+    <div class="mtop"><span class="mled"></span>CANDY MACHINE<span class="mled"></span></div>
+    <div class="reels">
+      <div class="reel" id="reel0"><div class="strip" id="strip0"></div></div>
+      <div class="reel" id="reel1"><div class="strip" id="strip1"></div></div>
+      <div class="reel" id="reel2"><div class="strip" id="strip2"></div></div>
+      <div class="reelmask"></div>
+    </div>
+    <div class="coinslot"><span class="slit"></span></div>
+    <div class="slotmsg" id="slotmsg"></div>
+    <div class="payout" id="payout"></div>
+    <button class="btn" id="slotbtn">COLLECT</button>
+  </div>
+</div>
+
+<div id="gameover" class="overlay hidden">  <h1 style="font-size:clamp(34px,9vw,60px)">SQUISHED</h1>
   <div id="gostats"></div>
   <div id="candyearned"></div>
   <button class="btn" id="againbtn">TRY AGAIN</button>
@@ -420,16 +504,18 @@ const PASSIVES = {
 // ============================================================
 //  ENEMY TYPES   (bite = how much SIZE they take when they hit you)
 // ============================================================
+// Threat-ranked palette. Fodder sits close to the background in hue+value so it
+// recedes; danger runs hot and bright. Colour carries information, not just mood.
 const ENEMIES = {
-  gummy:  {color:'#9d7bff', r:14, hp:14,   spd:62,  bite:4,  xp:3,  mass:3.4, behavior:'chase'},
-  jelly:  {color:'#ff6b9d', r:12, hp:10,   spd:100, bite:3,  xp:3,  mass:2.8, behavior:'chase'},
-  ball:   {color:'#ff8a5c', r:21, hp:48,   spd:44,  bite:8,  xp:7,  mass:7.5, behavior:'chase'},
-  split:  {color:'#8de86a', r:18, hp:30,   spd:58,  bite:6,  xp:5,  mass:6,   behavior:'split'},
-  charge: {color:'#ff5d5d', r:16, hp:26,   spd:70,  bite:11, xp:6,  mass:5,   behavior:'charge'},
-  spit:   {color:'#e06bff', r:15, hp:22,   spd:46,  bite:7,  xp:6,  mass:5,   behavior:'spit'},
-  shield: {color:'#6bd6ff', r:18, hp:38,   spd:40,  bite:8,  xp:8,  mass:7,   behavior:'shield', shield:42},
-  elite:  {color:'#ff45e0', r:26, hp:120,  spd:38,  bite:13, xp:18, mass:14,  behavior:'chase', elite:true},
-  boss:   {color:'#c14fff', r:48, hp:1000, spd:40,  bite:18, xp:90, mass:60,  behavior:'boss'},
+  gummy:  {color:'#6f5aa8', r:14, hp:14,   spd:62,  bite:4,  xp:3,  mass:3.4, behavior:'chase', shape:'round'},
+  jelly:  {color:'#9a6f9e', r:12, hp:10,   spd:100, bite:3,  xp:3,  mass:2.8, behavior:'chase', shape:'round'},
+  ball:   {color:'#c9895a', r:21, hp:48,   spd:44,  bite:8,  xp:7,  mass:7.5, behavior:'chase', shape:'heavy'},
+  split:  {color:'#8fbe63', r:18, hp:30,   spd:58,  bite:6,  xp:5,  mass:6,   behavior:'split', shape:'split'},
+  charge: {color:'#ff5245', r:16, hp:26,   spd:70,  bite:11, xp:6,  mass:5,   behavior:'charge', shape:'snout'},
+  spit:   {color:'#c86bff', r:15, hp:22,   spd:46,  bite:7,  xp:6,  mass:5,   behavior:'spit', shape:'spout'},
+  shield: {color:'#45a8d8', r:18, hp:38,   spd:40,  bite:8,  xp:8,  mass:7,   behavior:'shield', shield:42, shape:'shell'},
+  elite:  {color:'#ff3dd4', r:26, hp:120,  spd:38,  bite:13, xp:18, mass:14,  behavior:'chase', elite:true, shape:'spiky'},
+  boss:   {color:'#b04dff', r:48, hp:1000, spd:40,  bite:18, xp:90, mass:60,  behavior:'boss', shape:'boss'},
 };
 
 // ============================================================
@@ -551,12 +637,14 @@ function metaCandyMult(){ return (activeChar.candy||1) * (1+0.10*ulvl('luck')); 
 // ============================================================
 //  GAME STATE
 // ============================================================
-let state='menu';   // menu | play | levelup | over
-let player, enemies, orbs, shots, gumdrops, mines, followers, fx, popups, trails, eshots;
-let elapsed, spawnAcc, killCount, bossTimer, lastTs, bossKills;
+let state='menu';   // menu | play | levelup | slot | over
+let player, enemies, orbs, shots, gumdrops, mines, followers, fx, popups, trails, eshots, machines;
+let elapsed, spawnAcc, killCount, bossTimer, lastTs, bossKills, machineCandy, lastMachineT;
 let maxSlots, splitCd, splitCdMax=6, shakeAmt=0;
 let decor=[], ambient=[], gdt=0.016;
 const SPLIT_MAX=8;
+const MACHINE_FIELD_CAP=20;   // how many can litter the arena at once
+const MACHINE_GAP=15;         // min seconds between elite-dropped machines (bosses ignore this)
 
 function freshPlayer(){
   const p={
@@ -573,8 +661,8 @@ function freshPlayer(){
 }
 function resetGame(){
   player=freshPlayer();
-  enemies=[]; orbs=[]; shots=[]; gumdrops=[]; mines=[]; followers=[]; fx=[]; popups=[]; trails=[]; eshots=[];
-  elapsed=0; spawnAcc=0; killCount=0; bossTimer=60; lastTs=0; bossKills=0; zoom=1;
+  enemies=[]; orbs=[]; shots=[]; gumdrops=[]; mines=[]; followers=[]; fx=[]; popups=[]; trails=[]; eshots=[]; machines=[];
+  elapsed=0; spawnAcc=0; killCount=0; bossTimer=60; lastTs=0; bossKills=0; zoom=1; machineCandy=0; lastMachineT=-999;
   maxSlots=1; splitCd=0; shakeAmt=0;
   genDecor(); genAmbient();
 }
@@ -583,7 +671,8 @@ function genDecor(){
   const N=300;
   for(let i=0;i<N;i++){
     decor.push({ x:rand(-ARENA,ARENA), y:rand(-ARENA,ARENA),
-      type:Math.floor(rand(0,4)), s:rand(.7,1.7), hue:rand(0,360), rot:rand(0,TAU) });
+      type:Math.floor(rand(0,4)), s:rand(.7,1.7), hue:rand(0,360), rot:rand(0,TAU),
+      layer: i<70?0:1 });   // 0 = far haze (parallax), 1 = ground props
   }
 }
 function genAmbient(){
@@ -752,6 +841,8 @@ function nearestEnemy(x,y,maxd2=Infinity){
   for(const e of enemies){const d=dist2(x,y,e.x,e.y); if(d<bd){bd=d;best=e;}}
   return best;
 }
+// weapons should engage what you can actually see, not snipe across the arena
+function targetR2(){ const r=(Math.hypot(W,H)/2)/zoom*0.85; return r*r; }
 function haste(){
   const mo=player.passives.momentum||0;
   const ramp=clamp(player.moveTime/1.5,0,1);
@@ -781,7 +872,7 @@ function fireWeapons(dt){
 // Gobstopper: ricochets to the next nearby slime on each hit
 function fireGob(s){
   for(let i=0;i<s.count;i++){
-    const tgt=nearestEnemy(player.x,player.y);
+    const tgt=nearestEnemy(player.x,player.y,targetR2());
     const a=tgt?Math.atan2(tgt.y-player.y,tgt.x-player.x)+(i?rand(-0.2,0.2):0):rand(0,TAU);
     shots.push({x:player.x,y:player.y,vx:Math.cos(a)*s.speed,vy:Math.sin(a)*s.speed,
       dmg:s.dmg*powerMult(), r:6, life:2.4, color:'#ffe27a', speed:s.speed,
@@ -801,7 +892,7 @@ function fireNova(s){
 // Boomerang Pop: pierces out, then hits again on the way back
 function fireBoom(s){
   for(let i=0;i<s.count;i++){
-    const tgt=nearestEnemy(player.x,player.y);
+    const tgt=nearestEnemy(player.x,player.y,targetR2());
     const a=tgt?Math.atan2(tgt.y-player.y,tgt.x-player.x)+i*0.5:rand(0,TAU);
     shots.push({x:player.x,y:player.y,vx:Math.cos(a)*360,vy:Math.sin(a)*360,
       dmg:s.dmg*powerMult(),r:13,life:2.2,color:'#ff6b9d',pierce:99,boom:true,age:0,
@@ -877,10 +968,18 @@ function hitEnemy(e,dmg,proj){
   if(e.hp<=0) killEnemy(e);
 }
 function killEnemy(e){
-  const idx=enemies.indexOf(e); if(idx>=0) enemies.splice(idx,1);
+  const idx=enemies.indexOf(e); if(idx>=0) enemies.splice(idx,1); else return;
   killCount++;
   burst(e.x,e.y,e.color, e.boss?40:8);
   if(e.boss){ shake(12); bossKills++; popText(e.x,e.y-e.r,'BERRY DOWN!','#ffe27a'); }
+  // candy machines: bosses always cough one up. Elites roll 60%, but only once the
+  // 15s gate is open — otherwise big-slime elite density buries you in ceremonies.
+  const eliteDrop = e.elite && (elapsed-lastMachineT)>=MACHINE_GAP && Math.random()<0.6;
+  if((e.boss || eliteDrop) && machines.length<MACHINE_FIELD_CAP){
+    machines.push({x:e.x, y:e.y, t:0, boss:!!e.boss, wob:rand(0,TAU)});
+    lastMachineT=elapsed;
+    popText(e.x, e.y-e.r-16, 'CANDY MACHINE!', '#ffe27a');
+  }
   // splitters burst into little ones
   if(e.behavior==='split' && !e.fromSplit){
     for(let i=0;i<3;i++){ const a=rand(0,TAU);
@@ -1153,7 +1252,10 @@ function update(dt){
   }
 
   // orbs (eaten jelly = size + xp) — magnet & collect
-  const magnet=magnetFromMass(player.mass)*(1+0.22*(player.passives.greedy||0))*metaMagnet();
+  // The magnet must keep up with how far away things die: weapons out-range it, and zooming
+  // out spreads drops even wider. Anything outside still trickles home, so nothing is stranded.
+  const viewR=(Math.hypot(W,H)/2)/zoom;
+  const magnet=Math.max(magnetFromMass(player.mass), viewR*0.62)*(1+0.22*(player.passives.greedy||0))*metaMagnet();
   const mg2=magnet*magnet;
   for(let i=orbs.length-1;i>=0;i--){
     const o=orbs[i]; o.wob+=dt*6;
@@ -1161,8 +1263,12 @@ function update(dt){
     if(o.vac||d2<mg2) o.vac=true;
     if(o.vac){
       const dx=player.x-o.x,dy=player.y-o.y,d=Math.hypot(dx,dy)||1;
-      const pull=Math.min(620, 220+ (magnet-d));
+      const pull=Math.min(760, 260+(magnet-d));
       o.x+=dx/d*pull*dt*1.6; o.y+=dy/d*pull*dt*1.6;
+    } else {
+      // far-off jelly always trickles home so a kill is never wasted
+      const dx=player.x-o.x,dy=player.y-o.y,d=Math.hypot(dx,dy)||1;
+      o.x+=dx/d*95*dt; o.y+=dy/d*95*dt;
     }
     if(d2 < (pr+8)*(pr+8)){
       const gain=(1+0.22*(player.passives.sweet||0))*metaSweet();           // Sweet Tooth + Sweeter Jelly
@@ -1172,6 +1278,7 @@ function update(dt){
       orbs.splice(i,1);
     }
   }
+  if(orbs.length>700) orbs.splice(0, orbs.length-700);
 
   // caramel trails (damaging puddles)
   for(let i=trails.length-1;i>=0;i--){
@@ -1193,6 +1300,16 @@ function update(dt){
   if(eshots.length>300) eshots.splice(0, eshots.length-300);
   if(shots.length>500) shots.splice(0, shots.length-500);
   if(mines.length>120) mines.splice(0, mines.length-120);
+
+  // candy machines — walk into one to feed it a coin
+  for(let i=machines.length-1;i>=0;i--){
+    const mc=machines[i]; mc.t+=dt; mc.wob+=dt*3;
+    if(dist2(player.x,player.y,mc.x,mc.y) < (pr+34)*(pr+34)){
+      machines.splice(i,1);
+      openSlot(mc);
+      return;   // ceremony takes over; rest of the frame is moot
+    }
+  }
 
   // weapon slot unlocks from growth
   let slots=1; for(const t of SLOT_THRESHOLDS){ if(player.mass>=t) slots++; }
@@ -1258,13 +1375,12 @@ function render(){
   ctx.globalAlpha=1;
 
   // orbs
+  // orbs (xp jelly)
+  const oSpr=orbSprite();
   for(const o of orbs){
     if(!inView(o.x,o.y,40)) continue;
-    const wob=1+Math.sin(o.wob)*0.12;
-    ctx.fillStyle='#5ad9ff';
-    blob(o.x,o.y,o.r*wob,o.wob);
-    ctx.fillStyle='rgba(255,255,255,.7)';
-    ctx.beginPath();ctx.arc(o.x-o.r*0.3,o.y-o.r*0.3,o.r*0.28,0,TAU);ctx.fill();
+    const pu=Math.sin(o.wob);
+    stampSlime(oSpr, o.x, o.y, o.r, 1+pu*0.14, 1-pu*0.14);
   }
 
   // mines
@@ -1304,31 +1420,59 @@ function render(){
     }
     const lunging=(e.behavior==='charge'&&e.cState==='lunge');
     const winding=(e.behavior==='charge'&&e.cState==='wind');
-    const wob=1+Math.sin(e.wob)*0.14 + (winding?0.12*Math.sin(e.cT*40):0);
-    ctx.fillStyle = (e.hit>0||winding)?'#ffffff':e.color;
-    ctx.shadowColor=e.color; ctx.shadowBlur= e.boss?24:(e.elite?14:(lunging?16:0));
-    blob(e.x,e.y,e.r*wob,e.wob);
-    ctx.shadowBlur=0;
-    // shield shell
+    const def=ENEMIES[e.type]||ENEMIES.gummy;
+    const shape=def.shape||'round';
+    // squash/stretch instead of vertex wobble — cheaper, and reads as jelly
+    const pu=Math.sin(e.wob);
+    let wobX=1+pu*0.07, wobY=1-pu*0.07;
+    if(winding){ const t=Math.sin(e.cT*40)*0.1; wobX+=t; wobY-=t; }
+    if(lunging){ wobX*=1.18; wobY*=0.85; }
+    // 1. threat glow first (ambient halo), so the contact shadow can punch through it.
+    //    Reverse this order and a boss's own glow erases its grounding entirely.
+    if(e.boss) addGlow(e.x,e.y,e.r*2.1,def.color,0.42);
+    else if(e.elite) addGlow(e.x,e.y,e.r*2.0,def.color,0.38);
+    else if(lunging && !lowFx) addGlow(e.x,e.y,e.r*1.9,def.color,0.36);
+    // 2. contact shadow — this is what puts it IN the world. Spiky silhouettes
+    //    need a wider pool or their own spikes hide it and they read as floating.
+    //    Under load, small fodder loses its shadow first; the big threats keep theirs.
+    if(!lowFx || e.r>=18){
+      const shSpread = shape==='spiky' ? 1.62 : shape==='boss' ? 1.34 : shape==='split' ? 1.18 : 1;
+      contactShadow(e.x, e.y, e.r*shSpread, e.boss?0.95:0.62);
+    }
+    // 3. stamp the baked slime
+    const flash=(e.hit>0||winding);
+    const spr=slimeSprite(def.color, def.r, shape, flash);
+    // aim the pointy bit; the body stays upright so the light never lies
+    if(shape==='snout'||shape==='spout'){
+      const ds=dirSprite(def.color, def.r, shape, flash);
+      ctx.save();
+      ctx.translate(e.x,e.y);
+      ctx.rotate(Math.atan2(player.y-e.y, player.x-e.x));
+      stampSlime(ds, 0, 0, e.r, wobX, wobY);
+      ctx.restore();
+    }
+    stampSlime(spr, e.x, e.y, e.r, wobX, wobY);
+    // shield shell strength ring (the baked cap shows the type; this shows HP)
     if(e.shield>0){
       const sc=clamp(e.shield/(e.maxshield||1),0,1);
-      ctx.strokeStyle=`rgba(120,225,255,${0.4+0.45*sc})`; ctx.lineWidth=3+3*sc;
-      ctx.beginPath();ctx.arc(e.x,e.y,e.r+6,0,TAU);ctx.stroke();
+      ctx.strokeStyle=`rgba(170,235,255,${0.25+0.5*sc})`; ctx.lineWidth=2+3*sc;
+      ctx.beginPath();ctx.arc(e.x,e.y,e.r+7,0,TAU);ctx.stroke();
     }
     // elite warning ring (these can't be squished)
     if(e.elite){
       const ps=0.5+0.5*Math.sin(elapsed*6+e.wob);
-      ctx.strokeStyle=`rgba(255,80,230,${0.35+0.4*ps})`; ctx.lineWidth=3+2*ps;
-      ctx.beginPath();ctx.arc(e.x,e.y,e.r+7,0,TAU);ctx.stroke();
+      ctx.strokeStyle=`rgba(255,90,225,${0.3+0.4*ps})`; ctx.lineWidth=2+2*ps;
+      ctx.beginPath();ctx.arc(e.x,e.y,e.r*1.62,0,TAU);ctx.stroke();
     }
     eyes(e.x,e.y,e.r,player.x-e.x,player.y-e.y);
-    if(e.boss){ // crown + hp bar
-      ctx.fillStyle='#ffe27a';
-      for(let c=-1;c<=1;c++){ ctx.beginPath();
-        ctx.moveTo(e.x+c*16, e.y-e.r-6); ctx.lineTo(e.x+c*16-7, e.y-e.r+8); ctx.lineTo(e.x+c*16+7, e.y-e.r+8);
-        ctx.closePath(); ctx.fill(); }
-      ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(e.x-40,e.y-e.r-22,80,7);
-      ctx.fillStyle='#ff6b9d';ctx.fillRect(e.x-40,e.y-e.r-22,80*clamp(e.hp/e.maxhp,0,1),7);
+    if(e.boss){ // hp bar (crown is baked into the sprite now)
+      ctx.fillStyle='rgba(0,0,0,.55)';
+      roundRect(e.x-42,e.y-e.r-26,84,9,4.5); ctx.fill();
+      const hpk=clamp(e.hp/e.maxhp,0,1);
+      const hg=ctx.createLinearGradient(e.x-40,0,e.x+40,0);
+      hg.addColorStop(0,'#ff6b9d'); hg.addColorStop(1,'#ffb0e0');
+      ctx.fillStyle=hg;
+      roundRect(e.x-40,e.y-e.r-24.5,80*hpk,6,3); ctx.fill();
     }
     else if(e.elite){ // slim elite HP bar
       const w=e.r*1.6;
@@ -1361,13 +1505,20 @@ function render(){
 
   // followers
   for(const f of followers){
-    const wob=1+Math.sin(f.wob)*0.18;
+    const pu=Math.sin(f.wob);
     const fade=f.life<3? (0.4+0.6*Math.abs(Math.sin(f.life*8))):1;
     ctx.globalAlpha=fade;
-    ctx.fillStyle=playerColor; ctx.shadowColor=playerColor;ctx.shadowBlur=10;
-    blob(f.x,f.y,f.r*wob,f.wob); ctx.shadowBlur=0;
+    contactShadow(f.x,f.y,f.r,0.5);
+    const spr=slimeSprite(playerColor, 20, 'round', false);
+    stampSlime(spr, f.x, f.y, f.r, 1+pu*0.12, 1-pu*0.12);
     eyes(f.x,f.y,f.r,1,0);
     ctx.globalAlpha=1;
+  }
+
+  // candy machines (sitting in the arena, waiting for a coin)
+  for(const mc of machines){
+    if(!inView(mc.x,mc.y,60)) continue;
+    drawMachine(mc);
   }
 
   // player
@@ -1394,6 +1545,9 @@ function render(){
 
   ctx.restore();
 
+  // off-screen candy machine pointers (screen space)
+  drawMachineArrows();
+
   // ambient floating sparkles (screen space)
   if(ambient){
     for(const a of ambient){
@@ -1410,33 +1564,116 @@ function render(){
   vg.addColorStop(0,'rgba(20,8,32,0)'); vg.addColorStop(1,'rgba(16,6,28,0.6)');
   ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
 }
+function drawMachine(mc){
+  const bob=Math.sin(mc.wob)*3;
+  const x=mc.x, y=mc.y+bob;
+  const pulse=0.5+0.5*Math.sin(mc.t*4);
+  const s=mc.boss?1.25:1;
+  // ground glow
+  ctx.fillStyle=`rgba(255,226,122,${0.10+0.10*pulse})`;
+  ctx.beginPath();ctx.ellipse(x,y+22*s,30*s,10*s,0,0,TAU);ctx.fill();
+  // beacon beam so you can spot it in a swarm
+  const bg=ctx.createLinearGradient(x,y-150*s,x,y+10*s);
+  bg.addColorStop(0,'rgba(255,226,122,0)'); bg.addColorStop(1,`rgba(255,226,122,${0.16+0.12*pulse})`);
+  ctx.fillStyle=bg; ctx.fillRect(x-11*s, y-150*s, 22*s, 160*s);
+  // cabinet
+  ctx.fillStyle='#4a2d70'; ctx.strokeStyle='#ffe27a'; ctx.lineWidth=2.5;
+  roundRect(x-17*s, y-26*s, 34*s, 48*s, 7*s); ctx.fill(); ctx.stroke();
+  // glass dome full of candy
+  ctx.fillStyle='rgba(190,235,255,.4)';
+  ctx.beginPath();ctx.arc(x, y-11*s, 11.5*s, 0, TAU);ctx.fill();
+  const cols=['#ffe27a','#7ef0c8','#ff6b9d','#c8b6ff','#ff8a5c'];
+  for(let i=0;i<5;i++){ const a=i*1.32+mc.wob*0.4;
+    ctx.fillStyle=cols[i];
+    ctx.beginPath();ctx.arc(x+Math.cos(a)*5.4*s, y-11*s+Math.sin(a)*5.4*s, 2.7*s, 0, TAU);ctx.fill(); }
+  // coin slot + dispenser
+  ctx.fillStyle='#ffe27a';
+  ctx.fillRect(x-5*s, y+2*s, 10*s, 2.4*s);
+  ctx.fillStyle='#160d26';
+  roundRect(x-9*s, y+8*s, 18*s, 10*s, 2.5*s); ctx.fill();
+  // sparkle crown for boss machines
+  if(mc.boss){
+    ctx.fillStyle=`rgba(255,226,122,${0.6+0.4*pulse})`;
+    for(let c=-1;c<=1;c++){ ctx.beginPath();
+      ctx.moveTo(x+c*8*s, y-30*s); ctx.lineTo(x+c*8*s-4*s, y-23*s); ctx.lineTo(x+c*8*s+4*s, y-23*s);
+      ctx.closePath(); ctx.fill(); }
+  }
+}
+function roundRect(x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+// screen-space chevrons pointing at machines you can't see yet
+function drawMachineArrows(){
+  const off=machines.filter(mc=>!inView(mc.x,mc.y,40));
+  if(!off.length) return;
+  off.sort((a,b)=>dist2(a.x,a.y,player.x,player.y)-dist2(b.x,b.y,player.x,player.y));
+  const pad=42, cx=W/2, cy=H/2;
+  for(let i=0;i<Math.min(4,off.length);i++){
+    const mc=off[i];
+    const a=Math.atan2(mc.y-player.y, mc.x-player.x);
+    const rx=(W/2-pad), ry=(H/2-pad);
+    const t=Math.min(Math.abs(rx/Math.cos(a))||1e9, Math.abs(ry/Math.sin(a))||1e9);
+    const px=cx+Math.cos(a)*t, py=cy+Math.sin(a)*t;
+    const pulse=0.55+0.45*Math.sin(elapsed*5+i);
+    ctx.save(); ctx.translate(px,py); ctx.rotate(a);
+    ctx.fillStyle=`rgba(255,226,122,${0.55+0.4*pulse})`;
+    ctx.beginPath(); ctx.moveTo(13,0); ctx.lineTo(-8,-8); ctx.lineTo(-8,8); ctx.closePath(); ctx.fill();
+    ctx.restore();
+    ctx.fillStyle=`rgba(255,226,122,${0.5+0.35*pulse})`;
+    ctx.beginPath(); ctx.arc(px-Math.cos(a)*16, py-Math.sin(a)*16, 3.6, 0, TAU); ctx.fill();
+  }
+}
 function drawWorldBg(){
   const halfW=(W/2)/zoom, halfH=(H/2)/zoom, pad=140;
   const L=camX-halfW-pad, R=camX+halfW+pad, T=camY-halfH-pad, B=camY+halfH+pad;
-  // soft candy checkerboard for ground texture & motion sense
-  const tile=170;
-  const gx0=Math.floor(L/tile), gx1=Math.ceil(R/tile);
-  const gy0=Math.floor(T/tile), gy1=Math.ceil(B/tile);
-  for(let gx=gx0;gx<=gx1;gx++) for(let gy=gy0;gy<=gy1;gy++){
-    if((gx+gy)&1){ ctx.fillStyle='rgba(255,240,250,.03)'; ctx.fillRect(gx*tile,gy*tile,tile,tile); }
-  }
-  // scattered candy props
+
+  // 1. arena floor — a soft pool of light under the action, so the world has a centre
+  const fg=ctx.createRadialGradient(camX,camY,10,camX,camY,Math.max(halfW,halfH)*1.15);
+  fg.addColorStop(0,'rgba(126,90,180,0.16)');
+  fg.addColorStop(0.55,'rgba(80,50,130,0.06)');
+  fg.addColorStop(1,'rgba(20,8,34,0)');
+  ctx.fillStyle=fg; ctx.fillRect(L,T,R-L,B-T);
+
+  // 2. far haze layer at 0.55 parallax — big blurry candy shapes reading as depth
+  ctx.save();
+  ctx.globalAlpha=0.5;
   for(const d of decor){
-    if(d.x<L||d.x>R||d.y<T||d.y>B) continue;
-    drawDecor(d);
+    if(d.layer!==0) continue;
+    const px=d.x*0.55+camX*0.45, py=d.y*0.55+camY*0.45;
+    if(px<L||px>R||py<T||py>B) continue;
+    drawDecor(d,px,py,1.9,0.06);
   }
-  // candy-ribbon arena border
+  ctx.restore();
+
+  // 3. soft grid — orientation without the checkerboard's cheap look
+  const tile=200;
+  ctx.strokeStyle='rgba(255,235,250,0.035)'; ctx.lineWidth=1.5/zoom;
+  ctx.beginPath();
+  for(let gx=Math.floor(L/tile);gx<=Math.ceil(R/tile);gx++){ ctx.moveTo(gx*tile,T); ctx.lineTo(gx*tile,B); }
+  for(let gy=Math.floor(T/tile);gy<=Math.ceil(B/tile);gy++){ ctx.moveTo(L,gy*tile); ctx.lineTo(R,gy*tile); }
+  ctx.stroke();
+
+  // 4. near decor
+  for(const d of decor){
+    if(d.layer===0) continue;
+    if(d.x<L||d.x>R||d.y<T||d.y>B) continue;
+    drawDecor(d,d.x,d.y,1,0.14);
+  }
+
+  // 5. candy-ribbon arena border
   ctx.save();
   ctx.lineCap='round'; ctx.setLineDash([30,22]); ctx.lineDashOffset=-elapsed*30;
   ctx.strokeStyle='rgba(255,170,225,.35)'; ctx.lineWidth=12;
   ctx.strokeRect(-ARENA,-ARENA,ARENA*2,ARENA*2);
   ctx.restore();
 }
-function drawDecor(d){
+function drawDecor(d,px,py,sc,alpha){
   ctx.save();
-  ctx.translate(d.x,d.y); ctx.rotate(d.rot);
-  ctx.globalAlpha=0.14;
-  const s=d.s;
+  ctx.translate(px,py); ctx.rotate(d.rot);
+  ctx.globalAlpha=alpha;
+  const s=d.s*sc;
   if(d.type===0){ // lollipop swirl
     ctx.strokeStyle=`hsl(${d.hue},80%,76%)`; ctx.lineWidth=5*s; ctx.lineCap='round';
     ctx.beginPath();
@@ -1451,7 +1688,7 @@ function drawDecor(d){
   } else if(d.type===2){ // big faded gumdrop
     ctx.fillStyle=`hsl(${d.hue},68%,72%)`;
     ctx.beginPath(); ctx.arc(0,0,20*s,0,TAU); ctx.fill();
-    ctx.globalAlpha=0.22; ctx.fillStyle='#fff';
+    ctx.globalAlpha=alpha*1.5; ctx.fillStyle='#fff';
     ctx.beginPath(); ctx.arc(-7*s,-7*s,6*s,0,TAU); ctx.fill();
   } else { // four-point sparkle
     ctx.fillStyle=`hsl(${d.hue},90%,86%)`;
@@ -1465,6 +1702,202 @@ function drawDecor(d){
 function inView(x,y,m){
   return Math.abs(x-camX) < (W/2)/zoom + m && Math.abs(y-camY) < (H/2)/zoom + m;
 }
+// ============================================================
+//  SPRITE CACHE
+//  Every slime used to be hand-drawn from scratch, 200x a frame. Now each type is
+//  baked ONCE into an offscreen canvas — gradient body, rim light, gloss, silhouette
+//  — and then just stamped. We can afford the detail because we pay for it once.
+// ============================================================
+function hexRgb(h){ h=h.replace('#',''); return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)]; }
+function mixC(a,b,t){ return [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t]; }
+function lighten(c,t){ return mixC(c,[255,255,255],t); }
+function darken(c,t){ return mixC(c,[22,9,38],t); }
+function rgbS(c,a){ return a===undefined?`rgb(${c[0]|0},${c[1]|0},${c[2]|0})`:`rgba(${c[0]|0},${c[1]|0},${c[2]|0},${a})`; }
+
+function blobPath(g,cx,cy,r,phase,squash){
+  g.beginPath();
+  const pts=26;
+  for(let i=0;i<=pts;i++){
+    const a=i/pts*TAU, rr=r*(1+Math.sin(a*3+phase)*0.05);
+    const px=cx+Math.cos(a)*rr, py=cy+Math.sin(a)*rr*(squash===undefined?0.94:squash);
+    i===0?g.moveTo(px,py):g.lineTo(px,py);
+  }
+  g.closePath();
+}
+
+const SPR={};
+const SPR_Q=2;                       // bake at 2x so it stays crisp when scaled
+// one soft contact shadow, reused (tinted by alpha) for every entity in the game
+function shadowSprite(){
+  if(SPR._shadow) return SPR._shadow;
+  const S=128, c=document.createElement('canvas'); c.width=S; c.height=S;
+  const g=c.getContext('2d');
+  const rg=g.createRadialGradient(S/2,S/2,0,S/2,S/2,S/2);
+  rg.addColorStop(0,'rgba(8,3,16,0.55)'); rg.addColorStop(0.55,'rgba(8,3,16,0.28)'); rg.addColorStop(1,'rgba(8,3,16,0)');
+  g.fillStyle=rg; g.fillRect(0,0,S,S);
+  return SPR._shadow={c, S};
+}
+// soft additive glow, cached per colour — fake bloom without a post pass
+function glowSprite(color){
+  const key='glow_'+color; if(SPR[key]) return SPR[key];
+  const S=128, c=document.createElement('canvas'); c.width=S; c.height=S;
+  const g=c.getContext('2d'); const rc=hexRgb(color);
+  const rg=g.createRadialGradient(S/2,S/2,0,S/2,S/2,S/2);
+  rg.addColorStop(0,rgbS(rc,0.55)); rg.addColorStop(0.4,rgbS(rc,0.20)); rg.addColorStop(1,rgbS(rc,0));
+  g.fillStyle=rg; g.fillRect(0,0,S,S);
+  return SPR[key]={c,S};
+}
+
+// bake a slime: silhouette add-ons, gradient body, rim light, gloss
+function slimeSprite(color, baseR, shape, flash){
+  const key=`s_${color}_${baseR}_${shape}_${flash?1:0}`;
+  if(SPR[key]) return SPR[key];
+  const R=baseR*SPR_Q;
+  // only pad for what actually overhangs. A round blob padded by 85% wastes ~63%
+  // of every drawImage on transparent pixels, 200x a frame.
+  const PAD={spiky:0.62, boss:0.34, shell:0.26, split:0.14}[shape];
+  const pad=R*(PAD===undefined?0.10:PAD);
+  const S=Math.ceil((R+pad)*2);
+  const c=document.createElement('canvas'); c.width=S; c.height=S;
+  const g=c.getContext('2d');
+  const cx=S/2, cy=S/2;
+  const base=flash?[255,255,255]:hexRgb(color);
+  const phase=0.7;
+
+  // --- non-directional silhouette add-ons (these rotate with nothing, so the
+  //     baked light stays valid). Snout/spout live in dirSprite() instead. ---
+  g.fillStyle=rgbS(darken(base,0.2));
+  if(shape==='spiky'){                    // elite: spikes = "do NOT touch"
+    g.fillStyle=rgbS(darken(base,0.08));
+    for(let i=0;i<10;i++){ const a=i/10*TAU+0.3;
+      g.beginPath();
+      g.moveTo(cx+Math.cos(a)*R*1.5, cy+Math.sin(a)*R*1.5);
+      g.lineTo(cx+Math.cos(a+0.3)*R*0.92, cy+Math.sin(a+0.3)*R*0.92);
+      g.lineTo(cx+Math.cos(a-0.3)*R*0.92, cy+Math.sin(a-0.3)*R*0.92);
+      g.closePath(); g.fill();
+    }
+  } else if(shape==='split'){             // splitter: seam hinting it comes apart
+    g.fillStyle=rgbS(darken(base,0.35));
+    g.fillRect(cx-R*0.06, cy-R*1.05, R*0.12, R*2.1);
+  } else if(shape==='boss'){              // boss: crown spikes baked in
+    g.fillStyle=rgbS(lighten(base,0.1));
+    for(let i=0;i<12;i++){ const a=i/12*TAU;
+      g.beginPath();
+      g.moveTo(cx+Math.cos(a)*R*1.24, cy+Math.sin(a)*R*1.24);
+      g.lineTo(cx+Math.cos(a+0.16)*R*0.95, cy+Math.sin(a+0.16)*R*0.95);
+      g.lineTo(cx+Math.cos(a-0.16)*R*0.95, cy+Math.sin(a-0.16)*R*0.95);
+      g.closePath(); g.fill();
+    }
+  }
+
+  // --- rim light: fill bright, then punch the body in offset down-right,
+  //     leaving a crescent of light along the top-left. One light source. ---
+  g.save();
+  g.fillStyle=rgbS(lighten(base,0.72));
+  blobPath(g,cx,cy,R,phase); g.fill();
+  blobPath(g,cx,cy,R,phase); g.clip();
+  const lg=g.createLinearGradient(0,cy-R,0,cy+R);
+  lg.addColorStop(0, rgbS(lighten(base,0.42)));
+  lg.addColorStop(0.45, rgbS(base));
+  lg.addColorStop(1, rgbS(darken(base,0.5)));
+  g.fillStyle=lg;
+  blobPath(g,cx+R*0.075,cy+R*0.09,R*0.975,phase); g.fill();
+  // occlusion at the bottom so it feels round, not a sticker
+  const og=g.createRadialGradient(cx,cy-R*0.3,R*0.2,cx,cy,R*1.15);
+  og.addColorStop(0,'rgba(0,0,0,0)'); og.addColorStop(1,'rgba(12,4,24,0.42)');
+  g.fillStyle=og; g.fillRect(cx-R*1.2,cy-R*1.2,R*2.4,R*2.4);
+  g.restore();
+
+  // --- heavy types get a weighted base; shells get a hard candy cap ---
+  if(shape==='heavy'){
+    g.save(); blobPath(g,cx,cy,R,phase); g.clip();
+    const hg=g.createLinearGradient(0,cy+R*0.1,0,cy+R);
+    hg.addColorStop(0,'rgba(0,0,0,0)'); hg.addColorStop(1,rgbS(darken(base,0.62)));
+    g.fillStyle=hg; g.fillRect(cx-R,cy-R,R*2,R*2); g.restore();
+  }
+  if(shape==='shell'){
+    g.strokeStyle='rgba(214,244,255,0.9)'; g.lineWidth=R*0.16; g.lineCap='round';
+    g.beginPath(); g.arc(cx,cy,R*1.06,Math.PI*1.04,Math.PI*1.96); g.stroke();
+    g.strokeStyle='rgba(255,255,255,0.5)'; g.lineWidth=R*0.05;
+    g.beginPath(); g.arc(cx,cy,R*1.14,Math.PI*1.15,Math.PI*1.6); g.stroke();
+  }
+
+  // --- gloss ---
+  if(!flash){
+    g.save(); blobPath(g,cx,cy,R,phase); g.clip();
+    const gg=g.createRadialGradient(cx-R*0.3,cy-R*0.46,R*0.03,cx-R*0.3,cy-R*0.46,R*0.5);
+    gg.addColorStop(0,'rgba(255,255,255,0.55)'); gg.addColorStop(1,'rgba(255,255,255,0)');
+    g.fillStyle=gg;
+    g.beginPath(); g.ellipse(cx-R*0.28,cy-R*0.44,R*0.42,R*0.26,-0.5,0,TAU); g.fill();
+    g.restore();
+  }
+  return SPR[key]={c, S, R, scale:baseR/(S/2/SPR_Q)};
+}
+// The pointy directional bits live in their own sprite so they can rotate to aim
+// while the body stays upright and keeps its baked light source honest.
+function dirSprite(color, baseR, shape, flash){
+  const key=`d_${color}_${baseR}_${shape}_${flash?1:0}`;
+  if(SPR[key]) return SPR[key];
+  const R=baseR*SPR_Q, pad=R*0.85, S=Math.ceil((R+pad)*2);
+  const c=document.createElement('canvas'); c.width=S; c.height=S;
+  const g=c.getContext('2d'); const cx=S/2, cy=S/2;
+  const base=flash?[255,255,255]:hexRgb(color);
+  if(shape==='snout'){                    // charger: a pointed face = "I lunge"
+    const lg=g.createLinearGradient(cx,cy-R*0.6,cx,cy+R*0.6);
+    lg.addColorStop(0,rgbS(lighten(base,0.2))); lg.addColorStop(1,rgbS(darken(base,0.4)));
+    g.fillStyle=lg;
+    g.beginPath(); g.moveTo(cx+R*1.46,cy); g.lineTo(cx+R*0.1,cy-R*0.62); g.lineTo(cx+R*0.1,cy+R*0.62); g.closePath(); g.fill();
+  } else if(shape==='spout'){             // spitter: a nozzle = "I shoot"
+    g.fillStyle=rgbS(darken(base,0.3));
+    g.beginPath(); g.moveTo(cx+R*1.22,cy-R*0.08); g.lineTo(cx+R*0.1,cy-R*0.5); g.lineTo(cx+R*0.1,cy+R*0.32); g.closePath(); g.fill();
+    g.fillStyle=rgbS(lighten(base,0.35));
+    g.beginPath(); g.arc(cx+R*1.24,cy-R*0.06,R*0.21,0,TAU); g.fill();
+  }
+  return SPR[key]={c, S, R};
+}
+// XP jelly: halo baked in, so 120 orbs cost 120 plain drawImages instead of
+// 120 drawImages + 120 'lighter' composite switches.
+function orbSprite(){
+  if(SPR._orb) return SPR._orb;
+  const baseR=10, R=baseR*SPR_Q, pad=R*1.05, S=Math.ceil((R+pad)*2);
+  const c=document.createElement('canvas'); c.width=S; c.height=S;
+  const g=c.getContext('2d'); const cx=S/2, cy=S/2; const base=hexRgb('#5ad9ff');
+  const rg=g.createRadialGradient(cx,cy,R*0.4,cx,cy,R*2);
+  rg.addColorStop(0,rgbS(base,0.5)); rg.addColorStop(0.5,rgbS(base,0.16)); rg.addColorStop(1,rgbS(base,0));
+  g.fillStyle=rg; g.fillRect(0,0,S,S);
+  g.save();
+  g.fillStyle=rgbS(lighten(base,0.7));
+  blobPath(g,cx,cy,R,0.7); g.fill();
+  blobPath(g,cx,cy,R,0.7); g.clip();
+  const lg=g.createLinearGradient(0,cy-R,0,cy+R);
+  lg.addColorStop(0,rgbS(lighten(base,0.5))); lg.addColorStop(0.5,rgbS(base)); lg.addColorStop(1,rgbS(darken(base,0.42)));
+  g.fillStyle=lg; blobPath(g,cx+R*0.08,cy+R*0.09,R*0.975,0.7); g.fill();
+  g.restore();
+  g.fillStyle='rgba(255,255,255,.75)';
+  g.beginPath(); g.arc(cx-R*0.3,cy-R*0.32,R*0.28,0,TAU); g.fill();
+  return SPR._orb={c, S, R};
+}
+// stamp a baked slime so its blob lands at world radius r, with squash/stretch
+function stampSlime(spr, x, y, r, wobX, wobY){
+  const k=r/spr.R;                       // spr.R = blob radius baked inside the canvas
+  const w=spr.S*k*wobX, h=spr.S*k*wobY;
+  ctx.drawImage(spr.c, x-w/2, y-h/2, w, h);
+}
+function contactShadow(x,y,r,a){
+  const s=shadowSprite();
+  ctx.globalAlpha=a===undefined?1:a;
+  ctx.drawImage(s.c, x-r*1.35, y+r*0.38, r*2.7, r*1.05);
+  ctx.globalAlpha=1;
+}
+function addGlow(x,y,r,color,a){
+  const s=glowSprite(color);
+  ctx.globalCompositeOperation='lighter';
+  ctx.globalAlpha=a===undefined?0.6:a;
+  ctx.drawImage(s.c, x-r, y-r, r*2, r*2);
+  ctx.globalAlpha=1;
+  ctx.globalCompositeOperation='source-over';
+}
+
 function blob(x,y,r,phase){
   ctx.beginPath();
   const pts=10;
@@ -1485,21 +1918,209 @@ function eyes(x,y,r,lx,ly){
 }
 function drawPlayer(){
   const r=radiusFromMass(player.mass);
-  const wob=1+Math.sin(player.wob)*0.07;
-  if(player.invuln>0 && Math.floor(player.invuln*20)%2) ctx.globalAlpha=0.5;
-  // body
-  ctx.fillStyle=playerColor; ctx.shadowColor=playerColor; ctx.shadowBlur=18;
-  blob(player.x,player.y,r*wob,player.wob);
-  ctx.shadowBlur=0;
-  // shine
-  ctx.fillStyle='rgba(255,255,255,.5)';
-  ctx.beginPath();ctx.ellipse(player.x-r*0.32,player.y-r*0.38,r*0.22,r*0.13,-0.5,0,TAU);ctx.fill();
+  const pu=Math.sin(player.wob);
+  let wobX=1+pu*0.05, wobY=1-pu*0.05;
+  if(player.dash){ wobX*=1.22; wobY*=0.82; }        // stretch into the dash
+  const blink=(player.invuln>0 && Math.floor(player.invuln*20)%2);
+  if(blink) ctx.globalAlpha=0.5;
+  addGlow(player.x, player.y, r*2.0, playerColor, 0.30);
+  contactShadow(player.x, player.y, r, 0.8);
+  const spr=slimeSprite(playerColor, 20, 'round', false);
+  ctx.save();
+  ctx.translate(player.x,player.y);
+  stampSlime(spr, 0, 0, r, wobX, wobY);
+  ctx.restore();
   // face toward movement
   eyes(player.x,player.y,r, moveVec.x||0.01, moveVec.y||0.2);
   // mouth
   ctx.strokeStyle='#241634';ctx.lineWidth=Math.max(2,r*0.08);ctx.lineCap='round';
   ctx.beginPath();ctx.arc(player.x,player.y+r*0.18,r*0.22,0.15*Math.PI,0.85*Math.PI);ctx.stroke();
   ctx.globalAlpha=1;
+}
+
+// ============================================================
+//  CANDY MACHINE  (coin slot -> rigged reels -> loot rain)
+// ============================================================
+// Six candy symbols. The reel is theater: we roll the RESULT first, then build
+// strips that land on it — which is what lets us choreograph the near-miss.
+const SYMBOLS=[
+  {n:'Lemon Drop', c:'#ffe27a'},
+  {n:'Gumball',    c:'#7ef0c8'},
+  {n:'Cherry',     c:'#ff6b9d'},
+  {n:'Grape',      c:'#c8b6ff'},
+  {n:'Orange',     c:'#ff8a5c'},
+  {n:'Berry',      c:'#5ad9ff'},
+];
+let slotTimers=[];
+function clearSlotTimers(){ for(const t of slotTimers) clearTimeout(t); slotTimers=[]; }
+function later(fn,ms){ slotTimers.push(setTimeout(fn,ms)); }
+
+// every valid upgrade currently on the table (same rules the level-up cards use)
+function upgradePool(){
+  const pool=[];
+  const evolvedBases=new Set();
+  for(const rc of RECIPES) if(player.weapons[rc.evo]) evolvedBases.add(rc.w);
+  for(const id in player.weapons){
+    const def=wdef(id); if(!def) continue; const w=player.weapons[id];
+    if(w.lvl<def.max) pool.push({color:ICON_COLORS[id], name:def.name, apply:()=>{w.lvl++;}});
+  }
+  if(Object.keys(player.weapons).length<maxSlots){
+    for(const id in WEAPONS) if(!player.weapons[id] && !evolvedBases.has(id))
+      pool.push({color:ICON_COLORS[id], name:WEAPONS[id].name, apply:()=>{player.weapons[id]={lvl:1,t:0};}});
+  }
+  for(const id in PASSIVES){ const lvl=player.passives[id]||0;
+    if(lvl<PASSIVES[id].max) pool.push({color:ICON_COLORS[id], name:PASSIVES[id].name,
+      apply:()=>{player.passives[id]=(player.passives[id]||0)+1;}});
+  }
+  return pool;
+}
+// any evolution ready to fire right now?
+function readyEvolution(){
+  for(const rc of RECIPES){
+    const w=player.weapons[rc.w], pas=player.passives[rc.p]||0;
+    if(w && !player.weapons[rc.evo] && w.lvl>=WEAPONS[rc.w].max && pas>=PASSIVES[rc.p].max) return rc;
+  }
+  return null;
+}
+// push a weapon+passive pair all the way to an evolution (jackpot fallback)
+function forceEvolution(){
+  const owned=Object.keys(player.weapons).filter(id=>WEAPONS[id]);
+  if(!owned.length) return null;
+  const rcs=RECIPES.filter(rc=>owned.includes(rc.w) && !player.weapons[rc.evo]);
+  if(!rcs.length) return null;
+  const rc=rcs[Math.floor(rand(0,rcs.length))];
+  player.weapons[rc.w].lvl=WEAPONS[rc.w].max;
+  player.passives[rc.p]=PASSIVES[rc.p].max;
+  return rc;
+}
+function applyEvolution(rc){
+  delete player.weapons[rc.w];
+  player.weapons[rc.evo]={lvl:1,t:0};
+  return {color:ICON_COLORS[rc.evo], name:EVOS[rc.evo].name, evo:true};
+}
+
+function openSlot(mc){
+  state='slot';
+  showHud(false);
+  clearSlotTimers();
+
+  // ---- 1. roll the RESULT (rigged: 15% jackpot / 35% two-match / 50% no match) ----
+  const r=Math.random();
+  const tier = r<0.15 ? 3 : (r<0.50 ? 2 : 1);   // 3=jackpot, 2=two match, 1=no match
+  const bossBonus = mc && mc.boss ? 1.6 : 1;
+
+  // ---- 2. choose symbols that DISPLAY that result ----
+  const a=Math.floor(rand(0,SYMBOLS.length));
+  let picks;
+  if(tier===3){ picks=[a,a,a]; }
+  else if(tier===2){ let b=a; while(b===a) b=Math.floor(rand(0,SYMBOLS.length)); picks=[a,a,b]; }
+  else { // no match, and make sure it doesn't accidentally read as a pair
+    let b=a, c=a;
+    while(b===a) b=Math.floor(rand(0,SYMBOLS.length));
+    while(c===a||c===b) c=Math.floor(rand(0,SYMBOLS.length));
+    picks=[a,b,c];
+  }
+
+  // ---- 3. build the payout ----
+  const count = tier===3?5 : tier===2?3 : 1;
+  const won=[];
+  let evoRc = null;
+  if(tier===3){                       // SUGAR RUSH: hand them an evolution if we possibly can
+    evoRc = readyEvolution() || forceEvolution();
+  }
+  for(let i=0;i<count;i++){
+    const pool=upgradePool();
+    if(!pool.length){ player.mass+=18; won.push({color:'#ffe27a', name:'Honey Glob'}); continue; }
+    const pick=pool[Math.floor(rand(0,pool.length))];
+    pick.apply(); won.push({color:pick.color, name:pick.name});
+  }
+  if(evoRc) won.unshift(applyEvolution(evoRc));
+  const candy = Math.floor((tier===3?90 : tier===2?35 : 12) * bossBonus * metaCandyMult() * curDiff().candy);
+  machineCandy += candy;
+  const sizeGain = tier===3? 60 : tier===2? 24 : 8;
+  player.mass += sizeGain;
+  maxSlots = Math.max(maxSlots, Object.keys(player.weapons).length);
+  syncBuild();
+
+  // ---- 4. run the show ----
+  runSlotShow(picks, tier, won, candy, sizeGain);
+}
+
+function runSlotShow(picks, tier, won, candy, sizeGain){
+  const box=el('slot'); const msg=el('slotmsg'); const pay=el('payout'); const btn=el('slotbtn');
+  msg.textContent='Inserting coin...'; msg.className='slotmsg';
+  pay.innerHTML=''; btn.classList.add('hidden');
+  box.classList.remove('hidden');
+  box.querySelector('.machine').classList.remove('jackpot');
+
+  // build each reel strip so the target lands last; for a near-miss, park the
+  // matching symbol immediately BEFORE the landing cell so reel 3 crawls past it
+  const CELL=76, LOOPS=5;
+  for(let i=0;i<3;i++){
+    const strip=el('strip'+i), reel=el('reel'+i);
+    if(!strip||!reel) continue;
+    const seq=[];
+    for(let l=0;l<LOOPS;l++) for(let s=0;s<SYMBOLS.length;s++) seq.push(s);
+    if(i===2 && tier===2) seq.push(picks[0]);   // the tease: same symbol right before the miss
+    else if(i===2 && tier===3) seq.push((picks[0]+3)%SYMBOLS.length);
+    seq.push(picks[i]);                          // landing cell (last)
+    strip.innerHTML=seq.map(s=>`<div class="sym" style="--c:${SYMBOLS[s].c}"></div>`).join('');
+    strip.style.transition='none';
+    strip.style.transform='translateY(0px)';
+    reel.classList.add('spinning');
+    void strip.offsetWidth;                      // reflow so the reset sticks
+    const end=-(seq.length-1)*CELL;
+    const dur = i===0?1.0 : i===1?1.6 : (tier===1?2.2:3.0);
+    later(()=>{
+      strip.style.transition=`transform ${dur}s cubic-bezier(.12,.72,.16,1)`;
+      strip.style.transform=`translateY(${end}px)`;
+      later(()=>reel.classList.remove('spinning'), dur*1000-260);
+    }, 520 + i*180);
+  }
+
+  later(()=>{ msg.textContent='Spinning...'; }, 560);
+  if(tier>=2) later(()=>{ msg.textContent='Two candies...'; msg.className='slotmsg tense'; }, 2450);
+
+  const settle = 520 + 2*180 + (tier===1?2200:3000);
+  later(()=>{
+    if(tier===3){
+      msg.textContent='SUGAR RUSH!'; msg.className='slotmsg jack';
+      box.querySelector('.machine').classList.add('jackpot');
+      shake(18);
+    } else if(tier===2){
+      msg.textContent='NICE HAUL'; msg.className='slotmsg good'; shake(6);
+    } else {
+      msg.textContent='A little something'; msg.className='slotmsg';
+    }
+    // loot rains in, each with its own beam
+    won.forEach((w,idx)=>{
+      later(()=>{
+        const d=document.createElement('div');
+        d.className='loot'+(w.evo?' evoloot':'');
+        d.style.setProperty('--c', w.color||'#ffe27a');
+        d.innerHTML=`<div class="beam"></div><div class="cicon" style="--c:${w.color||'#ffe27a'}"></div>`+
+                    `<div class="lname">${w.name}${w.evo?' <b>EVOLVED!</b>':''}</div>`;
+        pay.appendChild(d);
+      }, idx*(tier===3?230:180));
+    });
+    later(()=>{
+      const d=document.createElement('div'); d.className='loot bonus';
+      d.innerHTML=`<div class="beam"></div><div class="candydisc big"></div>`+
+                  `<div class="lname">+${candy} candy &nbsp;&middot;&nbsp; +${sizeGain} size</div>`;
+      pay.appendChild(d);
+      btn.classList.remove('hidden');
+    }, won.length*(tier===3?230:180)+120);
+  }, settle);
+}
+
+function closeSlot(){
+  clearSlotTimers();
+  el('slot').classList.add('hidden');
+  if(state!=='over'){
+    showHud(true);
+    state = player.pendingLU>0 ? 'levelup' : 'play';
+    if(player.pendingLU>0) openLevelUp();
+  }
 }
 
 // ============================================================
@@ -1626,9 +2247,11 @@ function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random
 function gameOver(){
   if(state==='over') return;
   state='over';
+  clearSlotTimers();
+  el('slot').classList.add('hidden');
   const t=Math.floor(elapsed);
   // candy reward
-  const earned=Math.max(1, Math.floor((killCount*0.5 + elapsed/3 + player.level*3 + bossKills*25) * metaCandyMult() * curDiff().candy));
+  const earned=Math.max(1, Math.floor((killCount*0.5 + elapsed/3 + player.level*3 + bossKills*25) * metaCandyMult() * curDiff().candy) + (machineCandy||0));
   meta.candy+=earned;
   const newBest = t>meta.best; if(newBest) meta.best=t;
   saveMeta(); renderMenu();
@@ -1652,6 +2275,8 @@ function showHud(on){
 
 function startGame(){
   applyMeta();
+  clearSlotTimers();
+  el('slot').classList.add('hidden');
   resetGame();
   syncBuild();
   const D=curDiff();
@@ -1663,6 +2288,8 @@ function startGame(){
 }
 function toMenu(){
   state='menu';
+  clearSlotTimers();
+  el('slot').classList.add('hidden');
   el('gameover').classList.add('hidden');
   showHud(false);
   renderMenu();
@@ -1671,6 +2298,7 @@ function toMenu(){
 el('startbtn').onclick=startGame;
 el('againbtn').onclick=startGame;
 el('menubtn').onclick=toMenu;
+el('slotbtn').onclick=closeSlot;
 
 // ---- menu rendering + interaction ----
 function renderMenu(){
@@ -1744,14 +2372,25 @@ applyMeta(); renderMenu(); loadMeta();
 // ============================================================
 //  MAIN LOOP
 // ============================================================
+let fpsAvg=60, fpsT=0, lowFx=false;
 function frame(ts){
   requestAnimationFrame(frame);
   let dt=(ts-lastTs)/1000; lastTs=ts;
   if(!isFinite(dt)||dt<=0) dt=0.016;
   dt=Math.min(dt,0.05);
   gdt=dt;
+  // smoothed fps — the only benchmark that counts is the one on your actual phone
+  fpsAvg += (1/dt - fpsAvg)*0.05;
+  fpsT += dt;
+  if(fpsT>0.25){ fpsT=0; const f=el('fpsstat');
+    if(f){ f.textContent=Math.round(fpsAvg)+' fps';
+      f.style.color = fpsAvg>50 ? '#7ef0c8' : fpsAvg>34 ? '#ffe27a' : '#ff6b6b'; } }
+  // adaptive quality with hysteresis. I can't benchmark your GPU from here, so the
+  // game watches its own framerate and drops the least-important effects first.
+  if(!lowFx && fpsAvg<38) lowFx=true;
+  else if(lowFx && fpsAvg>52) lowFx=false;
   if(state==='play'){ update(dt); }
-  if(state==='play'||state==='levelup'||state==='over'){ if(player) render(); syncHud(); }
+  if(state==='play'||state==='levelup'||state==='slot'||state==='over'){ if(player) render(); syncHud(); }
   else { // menu idle: candy sky so it's not a black void behind the panel
     const g=ctx.createLinearGradient(0,0,0,H);
     g.addColorStop(0,'#5a3a7e'); g.addColorStop(.5,'#3d2660'); g.addColorStop(1,'#241634');
